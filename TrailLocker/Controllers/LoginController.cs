@@ -41,8 +41,8 @@ namespace TrailLocker.Controllers
         {
             var fb = new FacebookClient();
             var loginUrl = fb.GetLoginUrl(new {
-                client_id = "1424766361075600",
-                client_secret = "d23d50adbcd2ffc1077714cd63b7976d",
+                client_id = "603680269694814",
+                client_secret = "c45641c9de012c138f1658aa95a6c27d",
                 redirect_uri = RedirectUri.AbsoluteUri,
                 response_type = "code",
                 scope = "email" // Add other permissions as needed
@@ -56,8 +56,8 @@ namespace TrailLocker.Controllers
             var fb = new FacebookClient();
             dynamic result = fb.Post("oauth/access_token", new
             {
-                client_id = "1424766361075600",
-                client_secret = "d23d50adbcd2ffc1077714cd63b7976d",
+                client_id = "603680269694814",
+                client_secret = "c45641c9de012c138f1658aa95a6c27d",
                 redirect_uri = RedirectUri.AbsoluteUri,
                 code = code
             });

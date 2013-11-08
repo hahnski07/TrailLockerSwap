@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Web Developer Express 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrailLocker", "TrailLocker\TrailLocker.csproj", "{A5EE0E0A-F3DC-4220-8B7F-C5847B0C123E}"
 EndProject
 Global
