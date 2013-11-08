@@ -1,0 +1,19 @@
+﻿@model TrailLocker.Models.User
+
+@{
+    ViewBag.Title = "CreateAccount";
+}
+
+<h2>CreateAccount</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.LabelFor(m => m.email);
+    @Html.TextBoxFor(m => m.email);
+    @Html.LabelFor(m => m.username);
+    @Html.TextBoxFor(m => m.username);
+    @Html.LabelFor(m => m.password);
+    @Html.PasswordFor(m => m.password);
+    <input type="submit" />
+    @Html.ValidationSummary();
+}

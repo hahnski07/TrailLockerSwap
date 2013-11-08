@@ -1,0 +1,53 @@
+﻿@model TrailLocker.Models.Item
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<fieldset>
+    <legend>Item</legend>
+
+    <div class="display-label">condition</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.condition)
+    </div>
+
+    <div class="display-label">location</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.location)
+    </div>
+
+    <div class="display-label">weight</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.weight)
+    </div>
+
+    <div class="display-label">volume</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.volume)
+    </div>
+
+    <div class="display-label">color</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.color)
+    </div>
+
+    <div class="display-label">name</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.name)
+    </div>
+
+    <div class="display-label">brand</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.brand)
+    </div>
+</fieldset>
+@using (Html.BeginForm()) {
+    <p>
+        <input type="submit" value="Delete" /> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

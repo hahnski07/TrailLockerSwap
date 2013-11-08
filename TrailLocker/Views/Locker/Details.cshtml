@@ -1,0 +1,20 @@
+﻿@model TrailLocker.Models.Locker
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Locker</legend>
+
+    <div class="display-label">UserID</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.UserID)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.LockerID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

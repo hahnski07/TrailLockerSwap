@@ -1,0 +1,83 @@
+﻿@model TrailLocker.Models.Item
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Item</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.condition)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.condition)
+            @Html.ValidationMessageFor(model => model.condition)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.location)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.location)
+            @Html.ValidationMessageFor(model => model.location)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.weight)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.weight)
+            @Html.ValidationMessageFor(model => model.weight)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.volume)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.volume)
+            @Html.ValidationMessageFor(model => model.volume)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.color)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.color)
+            @Html.ValidationMessageFor(model => model.color)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.name)
+            @Html.ValidationMessageFor(model => model.name)
+        </div>
+
+        @Html.HiddenFor(model => model.ItemID)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.brand)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.brand)
+            @Html.ValidationMessageFor(model => model.brand)
+        </div>
+
+        <p>
+            <input type="submit" value="Save" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

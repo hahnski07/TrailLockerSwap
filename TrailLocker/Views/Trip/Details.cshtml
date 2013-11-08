@@ -1,0 +1,45 @@
+﻿@model TrailLocker.Models.Trip
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Trip</legend>
+
+    <div class="display-label">current_weight</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.current_weight)
+    </div>
+
+    <div class="display-label">total_capacity</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.total_capacity)
+    </div>
+
+    <div class="display-label">destination</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.destination)
+    </div>
+
+    <div class="display-label">weather</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.weather)
+    </div>
+
+    <div class="display-label">description</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.description)
+    </div>
+
+    <div class="display-label">leader</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.UserID)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.TripID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

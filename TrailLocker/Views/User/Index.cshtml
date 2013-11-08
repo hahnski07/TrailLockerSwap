@@ -1,0 +1,51 @@
+﻿@model IEnumerable<TrailLocker.Models.User>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th>
+            email
+        </th>
+        <th>
+            first_name
+        </th>
+        <th>
+            home
+        </th>
+        <th>
+            maxWeight
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.first_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.home)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.maxWeight)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.UserID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.UserID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.UserID })
+        </td>
+    </tr>
+}
+
+</table>

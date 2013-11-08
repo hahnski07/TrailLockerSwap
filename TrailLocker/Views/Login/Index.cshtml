@@ -1,0 +1,13 @@
+﻿@model TrailLocker.Controllers.LoginModel
+
+@{
+    ViewBag.Title = "Login";
+}
+
+<h2>Index</h2>
+<script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
+<div id = "login">
+<p> Please log in</p>
+@Html.ActionLink("Log in with Facebook","Facebook");
+

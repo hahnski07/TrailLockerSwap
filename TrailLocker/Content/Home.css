@@ -1,0 +1,36 @@
+﻿body {
+}
+
+#columnContainer
+{
+    clear:both;
+}
+
+.column
+{
+    margin: 5px;
+    float: left;
+}
+.column div
+{
+    margin-bottom: 10px;
+}
+
+#trips
+{
+    background-color: #FF9933;
+    width: 200px;
+    height: 300px;
+}
+#user
+{
+    background-color: #754719;
+    width: 200px;
+    height: 190px;
+}
+#locker
+{
+    background-color: #333385;
+    width: 200px;
+    height: 500px;
+}

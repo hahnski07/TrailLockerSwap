@@ -1,0 +1,50 @@
+﻿@model TrailLocker.Models.Item
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Item</legend>
+
+    <div class="display-label">condition</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.condition)
+    </div>
+
+    <div class="display-label">location</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.location)
+    </div>
+
+    <div class="display-label">weight</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.weight)
+    </div>
+
+    <div class="display-label">volume</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.volume)
+    </div>
+
+    <div class="display-label">color</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.color)
+    </div>
+
+    <div class="display-label">name</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.name)
+    </div>
+
+    <div class="display-label">brand</div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.brand)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.ItemID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
