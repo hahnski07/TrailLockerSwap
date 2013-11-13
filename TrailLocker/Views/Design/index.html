@@ -85,7 +85,7 @@
 			-webkit-box-shadow: inset 0px 0px 100px rgba(255,255,255,0.2);
 		}
 
-		input[type="button"],
+		input[type="submit"],
 		button {
 			-webkit-transition: all .1s ease-in-out;
 			   -moz-transition: all .1s ease-in-out;
@@ -126,8 +126,13 @@
         <div class="header-center fade-in">
             <h2>_______ Welcome to _______</h2>
             <h1>TrailLocker</h1>
-           <p><a href="./app/index.html" class="button">Log in with Facebook</a></p>
+		    <form action="@Url.Action("ExternalLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl })", method="post">
+			   <p><a class="button" type="submit" name="provider" value="facebook">Log in with Facebook</a></p>
+			</form>	
         </div>
     </div>
 </body>
 </html>
+
+
+
