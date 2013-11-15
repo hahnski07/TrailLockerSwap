@@ -7,18 +7,37 @@ using System.Web;
 using System.Web.Mvc;
 using TrailLocker.Models;
 using TrailLocker.Repository;
+using System.Web.Security;
+
+using Facebook;
+
+using TrailLocker.Authentication;
 
 namespace TrailLocker.Controllers
 {
-    public class UserController : SuperController
+    public class UserController : Controller
     {
+        private IRepository<User> repository;
+        private IAuthenticatedUserProvider provider; 
+
+        public UserController()
+        {
+            this.repository = new Repository<User>(new DBUnitOfWork());
+            this.provider = new FormsAuthenticatedUserProvider(this);
+        }
+
+        public UserController(IRepository<User> repository, IAuthenticatedUserProvider provider)
+        {
+            this.repository = repository;
+            this.provider = provider;
+        }
 
         //
         // GET: /User/
 
         public ViewResult Index()
         {
-            return View(UserDB.FindAll().ToList());
+            return View(repository.FindAll().ToList());
         }
 
         //
@@ -26,8 +45,53 @@ namespace TrailLocker.Controllers
 
         public ViewResult Details(Guid id)
         {
-            User user = UserDB.FindBy(x => x.UserID == id).Single();
+            User user = repository.FindBy(x => x.UserID == id).Single();
             return View(user);
+        }
+
+        public ActionResult Authenticate(String code)
+        {
+            FacebookClient client = new FacebookClient();
+
+            dynamic temp = client.Post("oauth/access_token", new
+            {
+                client_id = "603680269694814",
+                client_secret = "c45641c9de012c138f1658aa95a6c27d",
+                code = code
+            });
+
+            client.AccessToken = temp.access_token;
+
+            dynamic properties = client.Get("me?fields=first_name,last_name,id,email");
+            String email = properties.email;
+
+            User user = repository.FindBy(u => u.email == email).SingleOrDefault();
+
+            if (user == null)
+                user = CreateNewUser(properties);
+
+            FormsAuthentication.SetAuthCookie(user.email, false);
+            return RedirectToAction("Index", "Home");
+        }
+
+        private User CreateNewUser(dynamic me)
+        {
+            User new_user = new User(me.first_name, me.last_name, me.email);
+            new_user.locker = new Locker();
+
+            repository.Add(new_user);
+            repository.Commit();
+
+            //Locker new_locker = new Locker(new_user.UserID);
+
+
+            //.Add(new_locker);
+            //LockerDB.Commit();
+
+            //new_user.locker = new_locker;
+            //UserDB.Attach(new_user);
+            //UserDB.Commit();
+            return new_user;
         }
 
         //
@@ -47,8 +111,8 @@ namespace TrailLocker.Controllers
             if (ModelState.IsValid)
             {
                 user.UserID = Guid.NewGuid();
-                UserDB.Add(user);
-                UserDB.Commit();
+                repository.Add(user);
+                repository.Commit();
                 return RedirectToAction("Index");
             }
 
@@ -60,14 +124,13 @@ namespace TrailLocker.Controllers
  
         public ActionResult Edit(Guid id)
         {
-            User user = UserDB.FindBy(x => x.UserID == id).Single();
+            User user = repository.FindBy(x => x.UserID == id).Single();
             return View(user);
         }
 
         public ActionResult Account()
         {
-            User user = get_current_user();
-            return View(user);
+            return View(provider.AuthenticatedUser);
         }
 
         //
@@ -78,8 +141,8 @@ namespace TrailLocker.Controllers
         {
             if (ModelState.IsValid)
             {
-                UserDB.Attach(user);
-                UserDB.Commit();
+                repository.Attach(user);
+                repository.Commit();
                 return RedirectToAction("Index");
             }
             return View(user);
@@ -90,7 +153,7 @@ namespace TrailLocker.Controllers
  
         public ActionResult Delete(Guid id)
         {
-            User user = UserDB.FindBy(x => x.UserID == id).Single();
+            User user = repository.FindBy(x => x.UserID == id).Single();
             return View(user);
         }
 
@@ -100,16 +163,10 @@ namespace TrailLocker.Controllers
         [HttpPost, ActionName("Delete")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            User user = UserDB.FindBy(x => x.UserID == id).Single();
-            UserDB.Remove(user);
-            UserDB.Commit();
+            User user = repository.FindBy(x => x.UserID == id).Single();
+            repository.Remove(user);
+            repository.Commit();
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            UserDB.Dispose();
-            base.Dispose(disposing);
         }
     }
 }
