@@ -4,10 +4,10 @@
     ViewBag.Title = "Login";
 }
 
-<h2>Index</h2>
-<script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
-<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
-<div id = "login">
-<p> Please log in</p>
-@Html.ActionLink("Log in with Facebook","Facebook");
-
+<div class="header-center fade-in">
+    <h2>_______ Welcome to _______</h2>
+    <h1>TrailLocker</h1>
+	<form action="@Url.Action("Authenticate", "User", new { ReturnUrl = ViewBag.ReturnUrl })", method="post">
+		<p><a class="button" type="submit" name="provider" value="facebook">Log in with Facebook</a></p>
+	</form>
+</div>
