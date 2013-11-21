@@ -7,7 +7,7 @@
 <div class="header-center fade-in">
     <h2>_______ Welcome to _______</h2>
     <h1>TrailLocker</h1>
-	<form action="@Url.Action("Authenticate", "User", new { ReturnUrl = ViewBag.ReturnUrl })", method="post">
-		<p><a class="button" type="submit" name="provider" value="facebook">Log in with Facebook</a></p>
-	</form>
+	<!--<form action="@Url.Action("Authenticate", "User", new { ReturnUrl = ViewBag.ReturnUrl })", method="post">-->
+		<p><a href="@ViewBag.FacebookUrl" class="button" type="submit" name="provider" value="facebook">Log in with Facebook</a></p>
+	<!--</form>-->
 </div>

@@ -57,6 +57,7 @@ namespace TrailLocker.Controllers
             {
                 client_id = "603680269694814",
                 client_secret = "c45641c9de012c138f1658aa95a6c27d",
+                redirect_uri = Url.Action("Authenticate", "User", null, Request.Url.Scheme),
                 code = code
             });
 
@@ -71,7 +72,7 @@ namespace TrailLocker.Controllers
                 user = CreateNewUser(properties);
 
             FormsAuthentication.SetAuthCookie(user.email, false);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "User");
         }
 
         private User CreateNewUser(dynamic me)

@@ -34,6 +34,18 @@ namespace TrailLocker.Controllers
         }
         public ActionResult Index()
         {
+            var fb = new FacebookClient();
+            var loginUrl = fb.GetLoginUrl(new
+            {
+                client_id = "603680269694814",
+                client_secret = "c45641c9de012c138f1658aa95a6c27d",
+                redirect_uri = Url.Action("Authenticate", "User", null, Request.Url.Scheme),
+                response_type = "code",
+                scope = "email" // Add other permissions as needed
+            });
+
+            ViewBag.FacebookUrl = loginUrl.AbsoluteUri;
+
             return View();
         }
 
