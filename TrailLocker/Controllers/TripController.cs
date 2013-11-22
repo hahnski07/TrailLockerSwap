@@ -42,7 +42,7 @@ namespace TrailLocker.Controllers
 
         // TODO: Add unit test to check when the signed in user doesn't own this trip
         // TODO: Add unit test to check what happens if this id doesn't exists in database
-        [GET("trip/{id}")]
+        [GET("trip/{id:guid}")]
         public ViewResult Details(Guid id)
         {
             Trip trip = repository.FindBy(x => x.TripID == id).Single();
@@ -75,7 +75,7 @@ namespace TrailLocker.Controllers
         
         // TODO: Unit test signed in user owns the trip
         // TODO: Unit test what happens on id not found
-        [GET("trip/edit/{id}")]
+        [GET("trip/edit/{id:guid}")]
         public ActionResult Edit(Guid id)
         {
             Trip trip = repository.FindBy(x => x.TripID == id).Single();
@@ -98,14 +98,14 @@ namespace TrailLocker.Controllers
 
         // TODO: Unit test user owns this trip
         // TODO: Unit test returns correct id
-        [GET("trip/delete/{id}")]
+        [GET("trip/delete/{id:guid}")]
         public ActionResult Delete(Guid id)
         {
             Trip trip = repository.FindBy(x => x.TripID == id).Single();
             return View(trip);
         }
 
-        [POST("trip/delete/{id}")]
+        [POST("trip/delete/{id:guid}")]
         public ActionResult DeleteConfirmed(Guid id)
         {            
             Trip trip = repository.FindBy(x => x.TripID == id).Single();

@@ -42,7 +42,7 @@ namespace TrailLocker.Controllers
             return View(repository.FindAll().ToList());
         }
 
-        [GET("user/{id}")]
+        [GET("user/{id:guid}")]
         public ViewResult Details(Guid id)
         {
             User user = repository.FindBy(x => x.UserID == id).Single();
@@ -97,7 +97,7 @@ namespace TrailLocker.Controllers
         public ActionResult Deauthenticate()
         {
             FormsAuthentication.SignOut();
-            return RedirectToAction("Login", "User");
+            return RedirectToAction("Login", "User") ;
         }
 
         private User CreateNewUser(dynamic me)
@@ -125,7 +125,7 @@ namespace TrailLocker.Controllers
             return View(user);
         }
         
-        [GET("user/edit/{id}")]
+        [GET("user/edit/{id:guid}")]
         public ActionResult Edit(Guid id)
         {
             User user = repository.FindBy(x => x.UserID == id).Single();
@@ -144,14 +144,14 @@ namespace TrailLocker.Controllers
             return View(user);
         }
 
-        [POST("user/delete/{id}")]
+        [POST("user/delete/{id:guid}")]
         public ActionResult Delete(Guid id)
         {
             User user = repository.FindBy(x => x.UserID == id).Single();
             return View(user);
         }
 
-        [POST("user/delete/{id}")]
+        [POST("user/delete/{id:guid}")]
         public ActionResult DeleteConfirmed(Guid id)
         {
             User user = repository.FindBy(x => x.UserID == id).Single();

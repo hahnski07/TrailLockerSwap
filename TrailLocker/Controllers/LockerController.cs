@@ -41,7 +41,7 @@ namespace TrailLocker.Controllers
         }
 
         // Unit test user permissions
-        [GET("locker/{id}")]
+        [GET("locker/{id:guid}")]
         public ViewResult Details(Guid id)
         {
             Locker locker = repository.FindBy(x => x.LockerID == id).Single();
@@ -68,7 +68,7 @@ namespace TrailLocker.Controllers
             return View(locker);
         }
         
-        [GET("locker/edit/{id}")]
+        [GET("locker/edit/{id:guid}")]
         public ActionResult Edit(Guid id)
         {
             Locker locker = repository.FindBy(x => x.LockerID == id).Single();
@@ -87,7 +87,7 @@ namespace TrailLocker.Controllers
             return View(locker);
         }
 
-        [GET("locker/delete/{id}")]
+        [GET("locker/delete/{id:guid}")]
         public ActionResult Delete(Guid id)
         {
             Locker locker = repository.FindBy(x => x.LockerID == id).Single();
@@ -95,7 +95,7 @@ namespace TrailLocker.Controllers
         }
 
         
-        [POST("locker/delete/{id}")]
+        [POST("locker/delete/{id:guid}")]
         public ActionResult DeleteConfirmed(Guid id)
         {
             Locker locker = repository.FindBy(x => x.LockerID == id).Single();
