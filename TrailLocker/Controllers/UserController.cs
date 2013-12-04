@@ -12,6 +12,9 @@ using System.Web.Security;
 using Facebook;
 
 using TrailLocker.Authentication;
+using AttributeRouting;
+using AttributeRouting.Web;
+using AttributeRouting.Web.Mvc;
 
 namespace TrailLocker.Controllers
 {
@@ -32,23 +35,38 @@ namespace TrailLocker.Controllers
             this.provider = provider;
         }
 
-        //
-        // GET: /User/
-
+        [GET("")]
+        [GET("users", ActionPrecedence = 1)]
         public ViewResult Index()
         {
             return View(repository.FindAll().ToList());
         }
 
-        //
-        // GET: /User/Details/5
-
+        [GET("user/{id:guid}")]
         public ViewResult Details(Guid id)
         {
             User user = repository.FindBy(x => x.UserID == id).Single();
             return View(user);
         }
 
+        [GET("user/login")]
+        public ActionResult Login()
+        {
+            var fb = new FacebookClient();
+            var loginUrl = fb.GetLoginUrl(new {
+                client_id = "603680269694814",
+                client_secret = "c45641c9de012c138f1658aa95a6c27d",
+                redirect_uri = Url.Action("Authenticate", "User", null, Request.Url.Scheme),
+                response_type = "code",
+                scope = "email" // Add other permissions as needed
+            });
+
+            ViewBag.FacebookUrl = loginUrl.AbsoluteUri;
+
+            return View();
+        }
+
+        [GET("user/auth")]
         public ActionResult Authenticate(String code)
         {
             FacebookClient client = new FacebookClient();
@@ -75,6 +93,13 @@ namespace TrailLocker.Controllers
             return RedirectToAction("Index", "User");
         }
 
+        [GET("user/deauth")]
+        public ActionResult Deauthenticate()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Login", "User") ;
+        }
+
         private User CreateNewUser(dynamic me)
         {
             User new_user = new User(me.first_name, me.last_name, me.email);
@@ -83,30 +108,10 @@ namespace TrailLocker.Controllers
             repository.Add(new_user);
             repository.Commit();
 
-            //Locker new_locker = new Locker(new_user.UserID);
-
-
-            //.Add(new_locker);
-            //LockerDB.Commit();
-
-            //new_user.locker = new_locker;
-            //UserDB.Attach(new_user);
-            //UserDB.Commit();
             return new_user;
         }
 
-        //
-        // GET: /User/Create
-
-        public ActionResult Create()
-        {
-            return View();
-        } 
-
-        //
-        // POST: /User/Create
-
-        [HttpPost]
+        [POST("user/create")]
         public ActionResult Create(User user)
         {
             if (ModelState.IsValid)
@@ -120,24 +125,14 @@ namespace TrailLocker.Controllers
             return View(user);
         }
         
-        //
-        // GET: /User/Edit/5
- 
+        [GET("user/edit/{id:guid}")]
         public ActionResult Edit(Guid id)
         {
             User user = repository.FindBy(x => x.UserID == id).Single();
             return View(user);
         }
 
-        public ActionResult Account()
-        {
-            return View(provider.AuthenticatedUser);
-        }
-
-        //
-        // POST: /User/Edit/5
-
-        [HttpPost]
+        [POST("user/edit")]
         public ActionResult Edit(User user)
         {
             if (ModelState.IsValid)
@@ -149,19 +144,14 @@ namespace TrailLocker.Controllers
             return View(user);
         }
 
-        //
-        // GET: /User/Delete/5
- 
+        [POST("user/delete/{id:guid}")]
         public ActionResult Delete(Guid id)
         {
             User user = repository.FindBy(x => x.UserID == id).Single();
             return View(user);
         }
 
-        //
-        // POST: /User/Delete/5
-
-        [HttpPost, ActionName("Delete")]
+        [POST("user/delete/{id:guid}")]
         public ActionResult DeleteConfirmed(Guid id)
         {
             User user = repository.FindBy(x => x.UserID == id).Single();

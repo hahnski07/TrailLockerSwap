@@ -8,138 +8,110 @@ using System.Web.Mvc;
 using TrailLocker.Models;
 using TrailLocker.Repository;
 
+using TrailLocker.Authentication;
+using AttributeRouting;
+using AttributeRouting.Web;
+using AttributeRouting.Web.Mvc;
+
 namespace TrailLocker.Controllers
 { 
-    public class TripController : SuperController
+    public class TripController : Controller
     {
+        private IRepository<Trip> repository;
+        private IAuthenticatedUserProvider provider;
 
         public TripController()
         {
-
+            this.repository = new Repository<Trip>(new DBUnitOfWork());
+            this.provider = new FormsAuthenticatedUserProvider(this);
         }
-        //
-        // GET: /Trip/
 
+        public TripController(IRepository<Trip> repository, IAuthenticatedUserProvider provider)
+        {
+            this.repository = repository;
+            this.provider = provider;
+        }
+
+        [GET("trips")]
         public ViewResult Index()
         {
-            User user = get_current_user();
-            ICollection<Trip> trips = user.trips;
+            // Find trips for the logged in user
+            IQueryable<Trip> trips = repository.FindBy(t => t.trip_leader.UserID == provider.AuthenticatedUser.UserID);
             return View(trips);
         }
 
-        //
-        // GET: /Trip/Details/5
-
+        // TODO: Add unit test to check when the signed in user doesn't own this trip
+        // TODO: Add unit test to check what happens if this id doesn't exists in database
+        [GET("trip/{id:guid}")]
         public ViewResult Details(Guid id)
         {
-            Trip trip = TripDB.FindBy(x => x.TripID == id).Single();
-
+            Trip trip = repository.FindBy(x => x.TripID == id).Single();
             return View(trip);
         }
 
-        //
-        // GET: /Trip/Create
-
-        /*
-        public ActionResult Create(Guid userID)
+        [GET("trip/create")]
+        public ActionResult Create()
         {
-            ViewBag.userID = userID;
             return View();
         } 
-        */
-        //
-        // POST: /Trip/Create
 
-        [HttpPost]
-        public ActionResult Create(Trip trip , Guid userID)
+        // TODO: Write unit tests to validate this works correctly
+        [POST("trip/create")]
+        public ActionResult Create(Trip trip)
         {
             if (ModelState.IsValid)
             {
-                User trip_leader = UserDB.FindBy(x => x.UserID ==userID).Single();
-
                 trip.TripID = Guid.NewGuid();
-                TripDB.Add(trip);
+                trip.trip_leader = provider.AuthenticatedUser;
 
-                trip.trip_leader = trip_leader;
-                trip_leader.trips.Add(trip);
+                repository.Add(trip);
+                repository.Commit();
 
-                UserDB.Attach(trip_leader);
-
-
-                UserDB.Commit();
-                TripDB.Commit();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", new { id = trip.TripID });
             }
 
             return View(trip);
         }
-
-        public ActionResult Create()
-        {
-            User trip_leader = get_current_user();
-            Trip new_trip = new Trip(trip_leader.UserID);
-
-            TripDB.Add(new_trip);
-            TripDB.Commit();
-
-            trip_leader.trips.Add(new_trip);
-            UserDB.Attach(trip_leader);
-            UserDB.Commit();
-
-            return RedirectToAction("Details", new { id = new_trip.TripID });
-        }
         
-        //
-        // GET: /Trip/Edit/5
- 
+        // TODO: Unit test signed in user owns the trip
+        // TODO: Unit test what happens on id not found
+        [GET("trip/edit/{id:guid}")]
         public ActionResult Edit(Guid id)
         {
-            Trip trip = TripDB.FindBy(x => x.TripID == id).Single();
+            Trip trip = repository.FindBy(x => x.TripID == id).Single();
             return View(trip);
         }
 
-        //
-        // POST: /Trip/Edit/5
-
-        [HttpPost]
+        // TODO: Unit test signed in user owns the trip
+        // TODO: Unit test validate this works
+        [POST("trip/edit")]
         public ActionResult Edit(Trip trip)
         {
             if (ModelState.IsValid)
             {
-
-                TripDB.Attach(trip);
-                TripDB.Commit();
+                repository.Attach(trip);
+                repository.Commit();
                 return RedirectToAction("Index");
             }
             return View(trip);
         }
 
-        //
-        // GET: /Trip/Delete/5
- 
+        // TODO: Unit test user owns this trip
+        // TODO: Unit test returns correct id
+        [GET("trip/delete/{id:guid}")]
         public ActionResult Delete(Guid id)
         {
-            Trip trip = TripDB.FindBy(x => x.TripID == id).Single();
+            Trip trip = repository.FindBy(x => x.TripID == id).Single();
             return View(trip);
         }
 
-        //
-        // POST: /Trip/Delete/5
-
-        [HttpPost, ActionName("Delete")]
+        [POST("trip/delete/{id:guid}")]
         public ActionResult DeleteConfirmed(Guid id)
         {            
-
-            Trip trip = TripDB.FindBy(x => x.TripID == id).Single();
-            TripDB.Remove(trip);
-            TripDB.Commit();
+            Trip trip = repository.FindBy(x => x.TripID == id).Single();
+            repository.Remove(trip);
+            repository.Commit();
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            TripDB.Dispose();
-            base.Dispose(disposing);
         }
     }
 }

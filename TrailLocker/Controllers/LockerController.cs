@@ -9,110 +9,99 @@ using TrailLocker.Models;
 using TrailLocker.Repository;
 using TrailLocker.Models.Items;
 
+using TrailLocker.Authentication;
+using AttributeRouting;
+using AttributeRouting.Web;
+using AttributeRouting.Web.Mvc;
+
 namespace TrailLocker.Controllers
 { 
-    public class LockerController : SuperController
+    public class LockerController : Controller
     {
-
-         DBUnitOfWork unitOfWork = new DBUnitOfWork();
-
-        private Repository<Locker> LockerDB;
+        private IRepository<Locker> repository;
+        private IAuthenticatedUserProvider provider; 
 
         public LockerController()
         {
-            LockerDB  = new Repository<Locker>(unitOfWork);
+            this.repository = new Repository<Locker>(new DBUnitOfWork());
+            this.provider = new FormsAuthenticatedUserProvider(this);
         }
 
+        public LockerController(IRepository<Locker> repository, IAuthenticatedUserProvider provider)
+        {
+            this.repository = repository;
+            this.provider = provider;
+        }
+
+        // Should this return only the logged in user's lockers?
+        [GET("lockers")]
         public ViewResult Index()
         {
-            return View(LockerDB.FindAll().ToList());
+            return View(repository.FindAll().ToList());
         }
 
-        //
-        // GET: /Item/Details/5
-
+        // Unit test user permissions
+        [GET("locker/{id:guid}")]
         public ViewResult Details(Guid id)
         {
-            Locker locker = LockerDB.FindBy(x => x.LockerID == id).Single();
+            Locker locker = repository.FindBy(x => x.LockerID == id).Single();
             return View(locker);
         }
 
-        //
-        // GET: /Item/Create
-
+        [GET("locker/create")]
         public ActionResult Create()
         {
-
             return View();
         }
 
-
-        //
-        // POST: /Item/Create
-
-        [HttpPost]
+        [POST("locker/create")]
         public ActionResult Create(Locker locker)
         {
             if (ModelState.IsValid)
             {
                 locker.LockerID = Guid.NewGuid();
-                LockerDB.Add(locker);
-                LockerDB.Commit();
+                repository.Add(locker);
+                repository.Commit();
                 return RedirectToAction("Index");
             }
 
             return View(locker);
         }
         
-        //
-        // GET: /Item/Edit/5
- 
+        [GET("locker/edit/{id:guid}")]
         public ActionResult Edit(Guid id)
         {
-            Locker locker = LockerDB.FindBy(x => x.LockerID == id).Single();
+            Locker locker = repository.FindBy(x => x.LockerID == id).Single();
             return View(locker);
         }
 
-        //
-        // POST: /Item/Edit/5
-
-        [HttpPost]
+        [POST("locker/edit")]
         public ActionResult Edit(Locker locker)
         {
             if (ModelState.IsValid)
             {
-                LockerDB.Attach(locker);
-                LockerDB.Commit();
+                repository.Attach(locker);
+                repository.Commit();
                 return RedirectToAction("Index");
             }
             return View(locker);
         }
 
-        //
-        // GET: /Item/Delete/5
- 
+        [GET("locker/delete/{id:guid}")]
         public ActionResult Delete(Guid id)
         {
-            Locker locker = LockerDB.FindBy(x => x.LockerID == id).Single();
+            Locker locker = repository.FindBy(x => x.LockerID == id).Single();
             return View(locker);
         }
 
-        //
-        // POST: /Item/Delete/5
-
-        [HttpPost, ActionName("Delete")]
+        
+        [POST("locker/delete/{id:guid}")]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            Locker locker = LockerDB.FindBy(x => x.LockerID == id).Single();
-            LockerDB.Remove(locker);
-            LockerDB.Commit();
+            Locker locker = repository.FindBy(x => x.LockerID == id).Single();
+            repository.Remove(locker);
+            repository.Commit();
             return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            LockerDB.Dispose();
-            base.Dispose(disposing);
         }
     }
 }
