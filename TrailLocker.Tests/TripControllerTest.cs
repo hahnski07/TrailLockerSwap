@@ -1,14 +1,46 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using TrailLocker.Authentication;
+using TrailLocker.Controllers;
+using TrailLocker.Models;
+using TrailLocker.Repository;
+using System.Web;
+using System.Web.Mvc;
+
 namespace TrailLocker.Tests
 {
     [TestClass]
     public class TripControllerTest
     {
-        [TestMethod]
-        public void TestMethod1()
+        private User loggedInUser = new User()
+            {
+                email = "john_doe@taylor.edu",
+                first_name = "john",
+                last_name = "doe",
+                UserID = new Guid()
+            };
+
+        private IAuthenticatedUserProvider provider;
+        private IRepository<Trip> repository = new Repository<Trip>(new InMemoryUnitOfWork());
+        private Trip userTrip;
+        private Trip notUserTrip;
+
+        public TripControllerTest()
         {
+            userTrip = new Trip(loggedInUser.UserID);
+            notUserTrip = new Trip(Guid.NewGuid());
+            repository.Add(userTrip);
+            provider = new MockAuthenticatedUserProvider(loggedInUser);
+        }
+
+        [TestMethod]
+        public void Index_returns_list_of_Trips()
+        {
+            TripController controller = new TripController(repository, provider);
+            ViewResult result = controller.Index();
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.Model);
         }
     }
 }
