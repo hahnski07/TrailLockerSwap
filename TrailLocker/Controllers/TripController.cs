@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
+using System.Web.Routing;
 using System.Web.Mvc;
 using TrailLocker.Models;
 using TrailLocker.Repository;
@@ -33,7 +34,7 @@ namespace TrailLocker.Controllers
         }
 
         [GET("trips")]
-        public ViewResult Index()
+        public ActionResult Index()
         {
             // Find trips for the logged in user
             IQueryable<Trip> trips = repository.FindBy(t => t.UserID == provider.AuthenticatedUser.UserID);
@@ -43,9 +44,13 @@ namespace TrailLocker.Controllers
         // TODO: Add unit test to check when the signed in user doesn't own this trip
         // TODO: Add unit test to check what happens if this id doesn't exists in database
         [GET("trip/{id:guid}")]
-        public ViewResult Details(Guid id)
+        public ActionResult Details(Guid id)
         {
             Trip trip = repository.FindBy(x => x.TripID == id).Single();
+            if (trip.UserID != provider.AuthenticatedUser.UserID)
+            {
+                throw new UnauthorizedAccessException("Trip doesn't belong to user");
+            }
             return View(trip);
         }
 
@@ -68,7 +73,8 @@ namespace TrailLocker.Controllers
                 repository.Add(trip);
                 repository.Commit();
 
-                return RedirectToAction("Details", new { id = trip.TripID });
+                return RedirectToAction("Details",
+                    new RouteValueDictionary(new { id = trip.TripID}));
             }
 
             return View(trip);
@@ -80,6 +86,10 @@ namespace TrailLocker.Controllers
         public ActionResult Edit(Guid id)
         {
             Trip trip = repository.FindBy(x => x.TripID == id).Single();
+            if (trip.UserID != provider.AuthenticatedUser.UserID)
+            {
+                throw new UnauthorizedAccessException("Trip doesn't belong to user");
+            }
             return View(trip);
         }
 
@@ -103,6 +113,10 @@ namespace TrailLocker.Controllers
         public ActionResult Delete(Guid id)
         {
             Trip trip = repository.FindBy(x => x.TripID == id).Single();
+            if (trip.UserID != provider.AuthenticatedUser.UserID)
+            {
+                throw new UnauthorizedAccessException("Trip doesn't belong to user");
+            }
             return View(trip);
         }
 
@@ -110,6 +124,10 @@ namespace TrailLocker.Controllers
         public ActionResult DeleteConfirmed(Guid id)
         {            
             Trip trip = repository.FindBy(x => x.TripID == id).Single();
+            if (trip.UserID != provider.AuthenticatedUser.UserID)
+            {
+                throw new UnauthorizedAccessException("Trip doesn't belong to user");
+            }
             repository.Remove(trip);
             repository.Commit();
             return RedirectToAction("Index");
