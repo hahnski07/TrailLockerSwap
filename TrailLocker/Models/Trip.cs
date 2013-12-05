@@ -17,7 +17,6 @@ namespace TrailLocker.Models
 
         public String destination { get; set; }
 
-        public virtual User trip_leader { get; set; }
         public virtual ICollection<User> travellers { get; private set; }
 
         public virtual ICollection<Item> items { get; private set; }

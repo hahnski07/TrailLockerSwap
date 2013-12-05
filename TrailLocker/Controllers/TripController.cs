@@ -65,7 +65,6 @@ namespace TrailLocker.Controllers
             if (ModelState.IsValid)
             {
                 trip.TripID = Guid.NewGuid();
-                trip.trip_leader = provider.AuthenticatedUser;
 
                 repository.Add(trip);
                 repository.Commit();
