@@ -144,6 +144,30 @@ namespace TrailLocker.Tests
         }
 
         [TestMethod]
+        public void Edit_edits_correct_Trip()
+        {
+            TripController controller = new TripController(repository, provider);
+            userTrip.description = "My editted trip";
+            userTrip.destination = "No where";
+            controller.Edit(userTrip);
+            ViewResult result =  controller.Index() as ViewResult;
+            IQueryable<Trip> model = result.Model as IQueryable<Trip>;
+            Assert.AreEqual(1, model.Count());
+            Assert.IsTrue(model.Contains(userTrip));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void Cannot_Edit_Post_changes_to_other_users_trips()
+        {
+            TripController controller = new TripController(notUserRepository, provider);
+            notUserTrip.description = "Editted Trip";
+            controller.Edit(notUserTrip);
+            ViewResult result = controller.Index() as ViewResult;
+            IQueryable<Trip> model = result.Model as IQueryable<Trip>;
+        }
+
+        [TestMethod]
         public void Delete_returns_correct_Trip()
         {
             TripController controller = new TripController(repository, provider);

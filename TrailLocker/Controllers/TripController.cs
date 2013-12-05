@@ -41,8 +41,6 @@ namespace TrailLocker.Controllers
             return View(trips);
         }
 
-        // TODO: Add unit test to check when the signed in user doesn't own this trip
-        // TODO: Add unit test to check what happens if this id doesn't exists in database
         [GET("trip/{id:guid}")]
         public ActionResult Details(Guid id)
         {
@@ -61,7 +59,6 @@ namespace TrailLocker.Controllers
             return View();
         } 
 
-        // TODO: Write unit tests to validate this works correctly
         [POST("trip/create")]
         public ActionResult Create(Trip trip)
         {
@@ -80,8 +77,6 @@ namespace TrailLocker.Controllers
             return View(trip);
         }
         
-        // TODO: Unit test signed in user owns the trip
-        // TODO: Unit test what happens on id not found
         [GET("trip/edit/{id:guid}")]
         public ActionResult Edit(Guid id)
         {
@@ -93,11 +88,13 @@ namespace TrailLocker.Controllers
             return View(trip);
         }
 
-        // TODO: Unit test signed in user owns the trip
-        // TODO: Unit test validate this works
         [POST("trip/edit")]
         public ActionResult Edit(Trip trip)
         {
+            if (trip.UserID != provider.AuthenticatedUser.UserID)
+            {
+                throw new UnauthorizedAccessException("Trip doesn't belong to user");
+            }
             if (ModelState.IsValid)
             {
                 repository.Attach(trip);
@@ -107,8 +104,6 @@ namespace TrailLocker.Controllers
             return View(trip);
         }
 
-        // TODO: Unit test user owns this trip
-        // TODO: Unit test returns correct id
         [GET("trip/delete/{id:guid}")]
         public ActionResult Delete(Guid id)
         {
