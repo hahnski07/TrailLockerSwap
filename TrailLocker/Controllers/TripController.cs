@@ -36,7 +36,7 @@ namespace TrailLocker.Controllers
         public ViewResult Index()
         {
             // Find trips for the logged in user
-            IQueryable<Trip> trips = repository.FindBy(t => t.trip_leader.UserID == provider.AuthenticatedUser.UserID);
+            IQueryable<Trip> trips = repository.FindBy(t => t.UserID == provider.AuthenticatedUser.UserID);
             return View(trips);
         }
 
@@ -52,6 +52,7 @@ namespace TrailLocker.Controllers
         [GET("trip/create")]
         public ActionResult Create()
         {
+            ViewBag.userID = provider.AuthenticatedUser.UserID;
             return View();
         } 
 
